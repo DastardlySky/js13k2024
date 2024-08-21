@@ -6,6 +6,7 @@ let { canvas, context } = init();
 let frames = 0;
 
 context.imageSmoothingEnabled = false;
+
 let offscreenCanvas = document.createElement('canvas');
 
 let characterSprite = new Image();
@@ -53,7 +54,11 @@ function drawPixelText(context, text, x, y, font, threshold, scalingFactor, wigg
   }
 }
 
+
+
 let reiko = Sprite({
+  width: 16,
+  height: 32,
   x: canvas.width / 2,        
   y: canvas.height / 2, 
   anchor: {
@@ -67,10 +72,12 @@ function movement(sprite){
 
   if (keyPressed(ARROW_LEFT)) {
     sprite.x -= 1;
+    sprite.scaleX = -1;
   }
 
   if (keyPressed(ARROW_RIGHT)) {
     sprite.x += 1;
+    sprite.scaleX = 1;
   }
 
   if (keyPressed(ARROW_UP)) {
@@ -90,6 +97,7 @@ let loop = GameLoop({
   },
   
   update: function() {
+
     frames ++;
 
     if (frames % 60 == 0) {
