@@ -1,20 +1,82 @@
-import { init, Sprite, SpriteSheet, Scene, GameLoop, initKeys, keyPressed, Text, collides } from "./kontra.js";
-import { ARROW_LEFT, ARROW_RIGHT, ARROW_UP, ARROW_DOWN, CHARACTER_SPRITE} from "../util/constants.js";
+import { init, Sprite, SpriteSheet, Scene, GameLoop, initKeys, keyPressed, Text, collides, loadImage} from "./kontra.js";
+import { ARROW_LEFT, ARROW_RIGHT, ARROW_UP, ARROW_DOWN, CHARACTER_SPRITE, BACKGROUND_IMAGE} from "../util/constants.js";
 
 let { canvas, context } = init();
+canvas.width = 1586;
+canvas.height = 864;
 
 let frames = 0;
+let time = 0;
 
 context.imageSmoothingEnabled = false;
-
 let offscreenCanvas = document.createElement('canvas');
 
 let characterSprite = new Image();
 characterSprite.src = CHARACTER_SPRITE;
 
-let time = 0;
+let reiko = Sprite({
+  width: 16,
+  height: 32,
+  x: canvas.width / 2,        
+  y: canvas.height / 2,
+  dx: 0,
+  dy: 0,
+  image: characterSprite,
+  update(){
+    if (keyPressed(ARROW_LEFT)) {
+      this.dx = -2;
+      this.scaleX = -1;
+    } else if (keyPressed(ARROW_RIGHT)) {
+      this.dx = +2;
+      this.scaleX = 1;
+    }
 
-// custom function to draw pixel art text
+    else{
+      this.dx = 0
+    }
+  
+    if (keyPressed(ARROW_UP)) {
+      this.dy = -2;  
+    }
+  
+    else if (keyPressed(ARROW_DOWN)) {
+      this.dy = +2;  
+    }
+
+    else {
+      this.dy = 0
+    }
+
+    this.advance();
+    this.x = Math.max(0, Math.min(this.x, camera.width - this.width));
+    this.y = Math.max(0, Math.min(this.y, camera.height - this.height));
+  }
+});
+
+let camera = Scene({
+  id: 'world',
+  width: 2000,
+  height: 1600,
+  x: 0,
+  y: 0
+});
+
+camera.update = function(){
+  reiko.update();
+
+  this.x = Math.max(0, Math.min(reiko.x - (canvas.width / 2), this.width - canvas.width));
+  this.y = Math.max(0, Math.min(reiko.y - (canvas.height / 2), this.height - canvas.height));
+};
+
+camera.render = function(){
+  context.save();
+
+  context.translate(-this.camera.x, -this.camera.y);
+  reiko.render();
+  
+  context.restore();
+}
+
 function drawPixelText(context, text, x, y, font, threshold, scalingFactor, wiggle) {
   const canvasWidth = 250;
   const canvasHeight = 32;
@@ -54,50 +116,16 @@ function drawPixelText(context, text, x, y, font, threshold, scalingFactor, wigg
   }
 }
 
-
-
-let reiko = Sprite({
-  width: 16,
-  height: 32,
-  x: canvas.width / 2,        
-  y: canvas.height / 2, 
-  anchor: {
-    x: 0.5,
-    y: 0.5
-  },
-  image: characterSprite
-});
-
-function movement(sprite){
-
-  if (keyPressed(ARROW_LEFT)) {
-    sprite.x -= 1;
-    sprite.scaleX = -1;
-  }
-
-  if (keyPressed(ARROW_RIGHT)) {
-    sprite.x += 1;
-    sprite.scaleX = 1;
-  }
-
-  if (keyPressed(ARROW_UP)) {
-    sprite.y -= 1;  
-  }
-
-  if (keyPressed(ARROW_DOWN)) {
-    sprite.y += 1;  
-  }
-}
-
+camera.add(reiko)
 let loop = GameLoop({ 
 
   render: function() { 
-    reiko.render();
+    camera.render();
     drawPixelText(context, `${Math.floor(frames / 60)}`, 15, -16, '12px Calibri', 13, 3, true);
   },
   
   update: function() {
-
+    camera.update();
     frames ++;
 
     if (frames % 60 == 0) {
@@ -105,14 +133,9 @@ let loop = GameLoop({
     }
 
     console.log(frames/60)
-
-    movement(reiko)
-
-    reiko.update();   
   }
-  
+
 });
 
 initKeys(); 
-
 loop.start(); 
