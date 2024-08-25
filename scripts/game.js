@@ -71,9 +71,9 @@ img.onload = function() {
   let reiko = Sprite({
     width: 16,
     height: 32,
+    anchor: {x:0.5, y:0.5},
     x: canvas.width / 2,        
     y: canvas.height / 2,
-    anchor: {x:0, y:0},
     dx: 0,
     dy: 0,
     image: characterSprite,
@@ -81,6 +81,7 @@ img.onload = function() {
       if (keyPressed(ARROW_LEFT)) {
         this.dx = -2;
         this.scaleX = -1;
+        
       } else if (keyPressed(ARROW_RIGHT)) {
         this.dx = +2;
         this.scaleX = 1;
@@ -101,6 +102,11 @@ img.onload = function() {
       else {
         this.dy = 0
       }
+
+      tileEngine.sx = this.x + canvas.width / 2,
+      tileEngine.sy = this.y + canvas.height / 2,
+
+      this.advance();
     }
   });
   
@@ -142,12 +148,13 @@ img.onload = function() {
       }
     }
   }
+
+  tileEngine.add(reiko);
   
   let loop = GameLoop({ 
   
     render: function() {
       tileEngine.render();
-      reiko.render();
       drawPixelText(context, `${Math.floor(frames / 60)}`, 15, -16, '12px Calibri', 13, 3, true);
     },
     
