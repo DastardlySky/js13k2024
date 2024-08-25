@@ -6,4 +6,4 @@ export const ARROW_UP = 'arrowup';
 
 //Character Sprites and attributes
 export const CHARACTER_SPRITE = './assets/Reiko.png'
-export const MAP_IMAGE = './assets/tmpTileMap.png'
+export const BIG_SHEET = './assets/bigSheet.png'

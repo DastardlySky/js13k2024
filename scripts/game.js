@@ -1,5 +1,5 @@
 import { init, Sprite, SpriteSheet, Scene, GameLoop, initKeys, keyPressed, Text, collides, loadImage, TileEngine} from "./kontra.js";
-import { ARROW_LEFT, ARROW_RIGHT, ARROW_UP, ARROW_DOWN, CHARACTER_SPRITE, MAP_IMAGE} from "../util/constants.js";
+import { ARROW_LEFT, ARROW_RIGHT, ARROW_UP, ARROW_DOWN, CHARACTER_SPRITE, BIG_SHEET} from "../util/constants.js";
 
 let { canvas, context } = init();
 
@@ -9,12 +9,32 @@ let time = 0;
 context.imageSmoothingEnabled = false;
 let offscreenCanvas = document.createElement('canvas');
 
-let characterSprite = new Image();
-characterSprite.src = CHARACTER_SPRITE;
+let bigSheetImage = new Image();
+bigSheetImage.src = BIG_SHEET;
 
-let img = new Image();
-img.src = MAP_IMAGE;
-img.onload = function() {
+
+bigSheetImage.onload = function() {
+
+  let fireSpriteSheet = SpriteSheet({
+    image: bigSheetImage,
+    frameWidth: 8,
+    frameHeight: 8,
+    animations: {
+      flaming: {
+        frames: '10..20',
+        frameRate: 16
+      },
+    }
+  });
+  
+  let fire = Sprite({
+    x: 100,
+    y: 100,
+    anchor: {x: 0.5, y: 0.5},
+  
+    // required for an image sprite
+    animations: fireSpriteSheet.animations
+  });
   let tileEngine = TileEngine({
     // tile size
     tilewidth: 16,
@@ -27,7 +47,7 @@ img.onload = function() {
     // tileset object
     tilesets: [{
       firstgid: 1,
-      image: img
+      image: bigSheetImage
     }],
 
     // layer object
@@ -68,6 +88,18 @@ img.onload = function() {
     }]
   });
 
+  let reikoSpriteSheet = SpriteSheet({
+    image: bigSheetImage,
+    frameWidth: 8,
+    frameHeight: 8,
+    animations: {
+      test: {
+        frames: '0..20',
+        frameRate: 16
+      },
+    }
+  });
+
   let reiko = Sprite({
     width: 16,
     height: 32,
@@ -76,7 +108,7 @@ img.onload = function() {
     y: canvas.height / 2,
     dx: 0,
     dy: 0,
-    image: characterSprite,
+    animations: reikoSpriteSheet.animations,
     update(){
       if (keyPressed(ARROW_LEFT)) {
         this.dx = -2;
@@ -155,6 +187,7 @@ img.onload = function() {
   
     render: function() {
       tileEngine.render();
+      reiko.playAnimation("test");
       drawPixelText(context, `${Math.floor(frames / 60)}`, 15, -16, '12px Calibri', 13, 3, true);
     },
     
@@ -162,9 +195,9 @@ img.onload = function() {
       reiko.update();
       frames ++;
   
-      if (frames % 60 == 0) {
-        zzfx(...[.8,0,-100,,.02,.008,1,,9,2,249,.01,.01,,,,,.55,.02,,392]);
-      }
+      // if (frames % 60 == 0) {
+      //   zzfx(...[.8,0,-100,,.02,.008,1,,9,2,249,.01,.01,,,,,.55,.02,,392]);
+      // }
   
       // console.log(frames/60)
     }
