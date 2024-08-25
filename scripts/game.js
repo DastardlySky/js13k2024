@@ -103,8 +103,8 @@ img.onload = function() {
         this.dy = 0
       }
 
-      tileEngine.sx = this.x + canvas.width / 2,
-      tileEngine.sy = this.y + canvas.height / 2,
+      tileEngine.sx = this.x - canvas.width / 2,
+      tileEngine.sy = this.y - canvas.height / 2,
 
       this.advance();
     }
