@@ -55,8 +55,8 @@ let reiko = Sprite({
 
 let camera = Scene({
   id: 'world',
-  width: 2000,
-  height: 1600,
+  width: 1200,
+  height: 600,
   x: 0,
   y: 0
 });
