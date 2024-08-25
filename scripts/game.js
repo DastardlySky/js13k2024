@@ -1,5 +1,5 @@
 import { init, Sprite, SpriteSheet, Scene, GameLoop, initKeys, keyPressed, Text, collides, loadImage, TileEngine} from "./kontra.js";
-import { ARROW_LEFT, ARROW_RIGHT, ARROW_UP, ARROW_DOWN, CHARACTER_SPRITE, BIG_SHEET} from "../util/constants.js";
+import { ARROW_LEFT, ARROW_RIGHT, ARROW_UP, ARROW_DOWN, BIG_SHEET} from "../util/constants.js";
 
 let { canvas, context } = init();
 
@@ -35,6 +35,8 @@ bigSheetImage.onload = function() {
     // required for an image sprite
     animations: fireSpriteSheet.animations
   });
+  fire.playAnimation("flaming");
+
   let tileEngine = TileEngine({
     // tile size
     tilewidth: 16,
@@ -94,7 +96,7 @@ bigSheetImage.onload = function() {
     frameHeight: 8,
     animations: {
       test: {
-        frames: '0..20',
+        frames: '5..20',
         frameRate: 16
       },
     }
@@ -141,6 +143,7 @@ bigSheetImage.onload = function() {
       this.advance();
     }
   });
+  reiko.playAnimation("test");
   
   function drawPixelText(context, text, x, y, font, threshold, scalingFactor, wiggle) {
     const canvasWidth = 250;
@@ -187,12 +190,13 @@ bigSheetImage.onload = function() {
   
     render: function() {
       tileEngine.render();
-      reiko.playAnimation("test");
+      fire.render();
       drawPixelText(context, `${Math.floor(frames / 60)}`, 15, -16, '12px Calibri', 13, 3, true);
     },
     
     update: function() {
       reiko.update();
+      fire.animations.
       frames ++;
   
       // if (frames % 60 == 0) {
