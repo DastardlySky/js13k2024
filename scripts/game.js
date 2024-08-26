@@ -21,8 +21,8 @@ bigSheetImage.onload = function() {
     frameHeight: 8,
     animations: {
       flaming: {
-        frames: '10..20',
-        frameRate: 16
+        frames: '550..553',
+        frameRate: 8
       },
     }
   });
@@ -33,7 +33,7 @@ bigSheetImage.onload = function() {
     anchor: {x: 0.5, y: 0.5},
   
     // required for an image sprite
-    animations: fireSpriteSheet.animations
+    animations: fireSpriteSheet.animations,
   });
   fire.playAnimation("flaming");
 
@@ -92,11 +92,11 @@ bigSheetImage.onload = function() {
 
   let reikoSpriteSheet = SpriteSheet({
     image: bigSheetImage,
-    frameWidth: 8,
-    frameHeight: 8,
+    frameWidth: 16,
+    frameHeight: 32,
     animations: {
       test: {
-        frames: '5..20',
+        frames: 72,
         frameRate: 16
       },
     }
@@ -185,18 +185,18 @@ bigSheetImage.onload = function() {
   }
 
   tileEngine.add(reiko);
+  tileEngine.add(fire);
   
   let loop = GameLoop({ 
   
     render: function() {
       tileEngine.render();
-      fire.render();
       drawPixelText(context, `${Math.floor(frames / 60)}`, 15, -16, '12px Calibri', 13, 3, true);
     },
     
     update: function() {
       reiko.update();
-      fire.animations.
+      fire.update();
       frames ++;
   
       // if (frames % 60 == 0) {
