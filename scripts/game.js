@@ -24,7 +24,31 @@ bigSheetImage.onload = function() {
     
     const angleInDegrees = angleInRadians * (180 / Math.PI);
     
-    return angleInDegrees
+    return {
+      radians: angleInRadians,
+      degrees: angleInDegrees
+      };
+    }
+
+    let balls = [];
+    function shootFireball(){
+      let fire = Sprite({
+        x: reiko.x,
+        y: reiko.y,
+
+        dx: Math.cos(calculateAngle(reiko.x, reiko.y).radians) * 1,
+        dy: Math.sin(calculateAngle(reiko.x, reiko.y).radians) * 1,
+
+        anchor: {x: 0.5, y: 0.5},
+      
+        // required for an image sprite
+        animations: fireSpriteSheet.animations,
+      });
+
+      fire.playAnimation("flaming");
+      tileEngine.add(fire);
+      balls.push(fire);
+
     }
 
   initPointer();
@@ -41,15 +65,6 @@ bigSheetImage.onload = function() {
     }
   });
   
-  let fire = Sprite({
-    x: 100,
-    y: 100,
-    anchor: {x: 0.5, y: 0.5},
-  
-    // required for an image sprite
-    animations: fireSpriteSheet.animations,
-  });
-  fire.playAnimation("flaming");
 
   let tileEngine = TileEngine({
     // tile size
@@ -151,6 +166,10 @@ bigSheetImage.onload = function() {
         this.dy = 0
       }
 
+      if (keyPressed("space")) {
+        shootFireball()
+      }
+
       tileEngine.sx = this.x - canvas.width / 2,
       tileEngine.sy = this.y - canvas.height / 2,
 
@@ -198,7 +217,6 @@ bigSheetImage.onload = function() {
     }
   }
 
-  tileEngine.add(fire);
   tileEngine.add(reiko);
   
   let loop = GameLoop({ 
@@ -210,10 +228,15 @@ bigSheetImage.onload = function() {
     
     update: function() {
       reiko.update();
-      fire.update();
+
+      balls.forEach(ball => {
+        ball.update();
+      });
       
-      fire.x = reiko.x + 20;
-      fire.y = reiko.y;
+      // fire.update();
+      
+      // fire.x = reiko.x + 20;
+      // fire.y = reiko.y;
 
       console.log(calculateAngle(reiko.x, reiko.y))
 
