@@ -1,4 +1,4 @@
-import { init, Sprite, SpriteSheet, Scene, GameLoop, initKeys, keyPressed, Text, collides, loadImage, TileEngine} from "./kontra.js";
+import { init, Sprite, SpriteSheet, Scene, GameLoop, initKeys, initPointer, getPointer, keyPressed, Text, collides, loadImage, TileEngine} from "./kontra.js";
 import { ARROW_LEFT, ARROW_RIGHT, ARROW_UP, ARROW_DOWN, BIG_SHEET} from "../util/constants.js";
 
 let { canvas, context } = init();
@@ -14,6 +14,20 @@ bigSheetImage.src = BIG_SHEET;
 
 
 bigSheetImage.onload = function() {
+
+  function calculateAngle(reikoX, reikoY){
+
+    const deltaX = getPointer().x - reikoX + tileEngine.sx;
+    const deltaY = getPointer().y - reikoY + tileEngine.sy;
+    
+    const angleInRadians = Math.atan2(deltaY, deltaX);
+    
+    const angleInDegrees = angleInRadians * (180 / Math.PI);
+    
+    return angleInDegrees
+    }
+
+  initPointer();
 
   let fireSpriteSheet = SpriteSheet({
     image: bigSheetImage,
@@ -184,8 +198,8 @@ bigSheetImage.onload = function() {
     }
   }
 
-  tileEngine.add(reiko);
   tileEngine.add(fire);
+  tileEngine.add(reiko);
   
   let loop = GameLoop({ 
   
@@ -197,6 +211,13 @@ bigSheetImage.onload = function() {
     update: function() {
       reiko.update();
       fire.update();
+      
+      fire.x = reiko.x + 20;
+      fire.y = reiko.y;
+
+      console.log(calculateAngle(reiko.x, reiko.y))
+
+      // console.log(reiko.x)
       frames ++;
   
       // if (frames % 60 == 0) {
