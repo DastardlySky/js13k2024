@@ -32,14 +32,18 @@ bigSheetImage.onload = function() {
 
     let balls = [];
     function shootFireball(){
+
+      if (frames % 30 == 0) {
+        zzfx(...[.8,0,-100,,.02,.008,1,,9,2,249,.01,.01,,,,,.55,.02,,392]);
+
       let fire = Sprite({
         x: reiko.x,
         y: reiko.y,
 
+        anchor: {x: 0.5, y: 0.5},
+
         dx: Math.cos(calculateAngle(reiko.x, reiko.y).radians) * 1,
         dy: Math.sin(calculateAngle(reiko.x, reiko.y).radians) * 1,
-
-        anchor: {x: 0.5, y: 0.5},
       
         // required for an image sprite
         animations: fireSpriteSheet.animations,
@@ -48,6 +52,7 @@ bigSheetImage.onload = function() {
       fire.playAnimation("flaming");
       tileEngine.add(fire);
       balls.push(fire);
+    }
 
     }
 
@@ -59,8 +64,8 @@ bigSheetImage.onload = function() {
     frameHeight: 8,
     animations: {
       flaming: {
-        frames: '550..553',
-        frameRate: 8
+        frames: '550',
+        frameRate: 1
       },
     }
   });
